@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Pocket Empire — Prototype</title>
+<style>
+:root{--bg:#101827;--panel:#1b2940;--panel2:#243652;--gold:#ffd166;--mint:#7be0ad;--text:#f4f7fb;--muted:#aab8cc;--red:#ff8b8b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#243b5a 0,#101827 55%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
+.wrap{max-width:960px;margin:auto;padding:18px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.brand{font-weight:900;font-size:clamp(24px,4vw,34px);letter-spacing:-1px}.brand span{color:var(--gold)}.pill{background:#2b3d59;border:1px solid #415675;border-radius:999px;padding:8px 12px;font-size:13px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}.stat,.card{background:linear-gradient(160deg,#20314b,#19263b);border:1px solid #344963;border-radius:18px;padding:15px;box-shadow:0 8px 24px #0002}.stat small{color:var(--muted);display:block;font-size:12px}.stat strong{display:block;font-size:clamp(18px,3vw,27px);margin-top:4px}.gold{color:var(--gold)}.mint{color:var(--mint)}
+.layout{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}.district{position:relative;overflow:hidden;min-height:300px;background:linear-gradient(#6d9ab4 0 43%,#8bc2b2 43% 100%);border-radius:16px;padding:16px;color:#102238}.sun{position:absolute;right:23px;top:18px;width:48px;height:48px;border-radius:50%;background:#ffe6a6;box-shadow:0 0 35px #fff5a5}.cloud{position:absolute;top:35px;left:22px;font-size:30px;opacity:.8}.road{position:absolute;bottom:0;left:0;right:0;height:57px;background:#667384;border-top:5px solid #e8e6cf}.road:after{content:"";position:absolute;top:24px;left:0;right:0;border-top:3px dashed #fff0b4}.buildings{position:absolute;bottom:49px;left:12px;right:12px;display:flex;align-items:end;gap:8px}.building{flex:1;min-width:0;text-align:center;font-size:34px;filter:drop-shadow(0 4px 1px #0002)}.building div{font-size:11px;font-weight:800;background:#fff9;border-radius:6px;padding:4px 2px;margin-top:4px}.district h2{position:relative;margin:0;font-size:18px}.district p{position:relative;margin:4px 0;font-size:12px}.card h2{margin:0 0 8px;font-size:19px}.card p{color:var(--muted);font-size:13px;line-height:1.45}.btn{width:100%;border:0;border-radius:12px;padding:12px 13px;font-weight:800;font-size:14px;cursor:pointer;color:#142238;background:var(--gold);margin-top:8px;transition:transform .08s}.btn:active{transform:scale(.98)}.btn.secondary{background:#314966;color:#f4f7fb;border:1px solid #4b6585}.btn.green{background:var(--mint)}.btn:disabled{opacity:.4;cursor:not-allowed}.upgrade{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #354962}.upgrade .emoji{font-size:28px}.upgrade .details{flex:1;min-width:0}.upgrade strong{display:block;font-size:14px}.upgrade small{display:block;color:var(--muted);font-size:12px}.buy{width:auto;min-width:100px;padding:10px;font-size:12px;margin:0}.event{border:1px solid #705d3a;background:#3b342b;border-radius:14px;padding:12px;margin-top:12px}.event b{color:var(--gold)}.event button{width:auto;margin:7px 5px 0 0;padding:9px 12px}.footer{color:#8799b1;font-size:11px;text-align:center;margin:20px 0 8px}.notice{min-height:22px;font-size:13px;color:var(--mint);margin-top:8px}
+@media(max-width:700px){.layout{grid-template-columns:1fr}.district{min-height:270px}.stats{gap:7px}.stat{padding:11px}.wrap{padding:12px}.buy{min-width:88px}.card{padding:13px}}
+</style></head>
+<body><main class="wrap">
+<header class="top"><div><div class="brand">POCKET <span>EMPIRE</span></div><div class="pill">PLAYABLE MVP • BUILD YOUR BUSINESS</div></div><button class="btn secondary" style="width:auto;margin:0" id="reset">Reset game</button></header>
+<section class="stats">
+<div class="stat"><small>YOUR CASH</small><strong class="gold" id="cash">$0</strong></div>
+<div class="stat"><small>INCOME / SEC</small><strong class="mint" id="income">$0</strong></div>
+<div class="stat"><small>EMPIRE LEVEL</small><strong id="level">1</strong></div>
+</section>
+<section class="layout">
+<div>
+<div class="district"><div class="sun"></div><div class="cloud">☁️</div><h2 id="districtName">Little Corner</h2><p id="districtDesc">Every empire starts somewhere.</p>
+<div class="buildings" id="buildings"></div><div class="road"></div></div>
+<div class="event" id="eventBox"><b>📣 Business bulletin</b><div id="eventText">A customer rush is coming! Make your first upgrade to grow faster.</div><button class="btn" id="eventBtn">Handle event</button></div>
+<div class="notice" id="notice" aria-live="polite"></div>
+</div>
+<div class="card"><h2>🏗️ Grow your empire</h2><p>Invest your cash to earn more every second. Try a production chain and unlock bigger businesses.</p><div id="upgrades"></div>
+<button class="btn green" id="collect">💵 Collect a customer tip (+$5)</button>
+<button class="btn secondary" id="daily">🎁 Claim daily bonus</button>
+<button class="btn secondary" id="adBonus">▶ Watch demo ad for 2× cash</button>
+</div>
+</section>
+<section class="layout" style="margin-top:14px">
+<div class="card"><h2>🎯 Today's missions</h2><div id="missions"></div></div>
+<div class="card"><h2>✨ Empire Shop</h2><p>Prototype shop: these buttons simulate purchase flows. No real money is charged in this demo.</p>
+<div class="upgrade"><div class="emoji">🎨</div><div class="details"><strong>Golden Shop Skin</strong><small>Cosmetic concept • $2.99</small></div><button class="btn buy secondary" id="skin">Preview</button></div>
+<div class="upgrade"><div class="emoji">🚫</div><div class="details"><strong>Ad-Free Empire</strong><small>Concept upgrade • $6.99</small></div><button class="btn buy secondary" id="premium">Preview</button></div>
+</div></section>
+<div class="footer">Pocket Empire prototype v0.1 • Progress saves on this device • Demo ad and shop only; not connected to real ad networks or payments.</div>
+</main>
+<script>
+const defaults={cash:35,shops:0,workers:0,machines:0,level:1,totalEarned:0,last:Date.now(),dailyDate:"",missionsDone:[],eventReady:true,skin:false,premium:false};
+let s;try{s={...defaults,...JSON.parse(localStorage.getItem("pocketEmpireSave")||"{}")}}catch(e){s={...defaults}}
+const defs=[
+ {key:"shops",name:"Street Food Cart",emoji:"🌮",desc:"+$1.2/sec",base:25,rate:1.2},
+ {key:"workers",name:"Hire a Worker",emoji:"🧑‍🍳",desc:"+$5/sec",base:110,rate:5},
+ {key:"machines",name:"Auto Production Line",emoji:"⚙️",desc:"+$22/sec",base:450,rate:22}
+];
+function fmt(n){return "$"+Math.floor(n).toLocaleString("en-US")}
+function cost(d){return Math.floor(d.base*Math.pow(1.62,s[d.key]))}
+function income(){return defs.reduce((a,d)=>a+s[d.key]*d.rate,0)}
+function save(){s.last=Date.now();localStorage.setItem("pocketEmpireSave",JSON.stringify(s))}
+function notify(t){document.getElementById("notice").textContent=t}
+function buy(key){let d=defs.find(x=>x.key===key),c=cost(d);if(s.cash<c){notify("Not enough cash yet — collect tips or wait for income.");return} s.cash-=c;s[key]++;s.totalEarned+=0;notify(d.name+" added to your empire!");checkLevel();render();save()}
+function checkLevel(){let n=1+Math.floor((s.shops*1+s.workers*3+s.machines*8)/4);if(n>s.level){s.level=n;notify("🎉 Empire level "+n+" unlocked! Your district is growing.");}}
+function render(){document.getElementById("cash").textContent=fmt(s.cash);document.getElementById("income").textContent=fmt(income());document.getElementById("level").textContent=s.level;
+ document.getElementById("districtName").textContent=s.level<3?"Little Corner":s.level<6?"Market Street":s.level<10?"Business District":"Pocket Metropolis";
+ document.getElementById("districtDesc").textContent=s.level<3?"Every empire starts somewhere.":s.level<6?"Your little business is becoming a local favorite.":"The whole city is noticing your success.";
+ document.getElementById("buildings").innerHTML=[{n:s.shops,e:"🌮",t:"Food cart"},{n:s.workers,e:"🏪",t:"Shop"},{n:s.machines,e:"🏭",t:"Factory"}].filter(x=>x.n>0).map(x=>`<div class="building">${x.e}<div>${x.t} ×${x.n}</div></div>`).join("")||'<div class="building">🏚️<div>Your first shop</div></div>';
+ document.getElementById("upgrades").innerHTML=defs.map(d=>`<div class="upgrade"><div class="emoji">${d.emoji}</div><div class="details"><strong>${d.name} ×${s[d.key]}</strong><small>${d.desc} • Cost ${fmt(cost(d))}</small></div><button class="btn buy" ${s.cash<cost(d)?"disabled":""} onclick="buy('${d.key}')">BUY</button></div>`).join("");
+ const missions=[{id:"first",txt:"Buy your first business upgrade",ok:s.shops+s.workers+s.machines>=1},{id:"cash",txt:"Earn $100 total",ok:s.totalEarned>=100},{id:"level",txt:"Reach empire level 3",ok:s.level>=3}];
+ document.getElementById("missions").innerHTML=missions.map(m=>`<div class="upgrade"><div class="emoji">${m.ok?"✅":"🎯"}</div><div class="details"><strong>${m.txt}</strong><small>${m.ok?"Completed":"In progress"}</small></div></div>`).join("");
+ document.getElementById("daily").disabled=s.dailyDate===new Date().toDateString();
+ document.getElementById("daily").textContent=s.dailyDate===new Date().toDateString()?"✅ Daily bonus claimed":"🎁 Claim daily bonus";
+}
+window.buy=buy;
+document.getElementById("collect").onclick=()=>{s.cash+=5;s.totalEarned+=5;notify("Nice! A happy customer left you a tip.");render();save()};
+document.getElementById("daily").onclick=()=>{let today=new Date().toDateString();if(s.dailyDate===today)return;s.dailyDate=today;s.cash+=Math.max(50,Math.floor(income()*60));notify("Daily bonus claimed! Come back tomorrow.");render();save()};
+document.getElementById("eventBtn").onclick=()=>{let choices=[{t:"Customer rush! You earned a $25 bonus.",v:25},{t:"A supplier discount saved you $15.",v:15},{t:"Great review! Customers tipped you $35.",v:35}];let e=choices[Math.floor(Math.random()*choices.length)];s.cash+=e.v;s.totalEarned+=e.v;document.getElementById("eventText").textContent=e.t;document.getElementById("eventBtn").disabled=true;notify("Business event resolved.");render();save();setTimeout(()=>{document.getElementById("eventText").textContent="Another business opportunity is ready.";document.getElementById("eventBtn").disabled=false},7000)};
+document.getElementById("adBonus").onclick=()=>{s.cash+=Math.max(25,Math.floor(income()*60));s.totalEarned+=Math.max(25,Math.floor(income()*60));notify("Demo only: bonus granted. Real rewarded ads are not connected yet.");render();save()};
+document.getElementById("skin").onclick=()=>{notify("Shop preview: Golden Shop Skin. Real in-app purchase integration comes later.")};
+document.getElementById("premium").onclick=()=>{notify("Shop preview: Ad-Free Empire. No purchase was made.")};
+document.getElementById("reset").onclick=()=>{if(confirm("Reset all Pocket Empire progress on this device?")){localStorage.removeItem("pocketEmpireSave");s={...defaults};render();notify("New empire started.");save()}};
+let elapsed=Math.max(0,Math.min(4*60*60,(Date.now()-(s.last||Date.now()))/1000));if(elapsed>0){let earned=elapsed*income();s.cash+=earned;s.totalEarned+=earned;notify("Welcome back! Your businesses earned "+fmt(earned)+" while you were away.");}
+setInterval(()=>{s.cash+=income();s.totalEarned+=income();checkLevel();render();save()},1000);
+render();save();
+</script></body></html>
